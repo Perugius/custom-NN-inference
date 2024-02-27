@@ -22,7 +22,7 @@ std::vector<float> single_filter_1Dconvolution(const std::vector<float>& input, 
         // finally k iterates over all the kernels and adds up everything to the same result
         for (int i = 0; i < result_size; ++i) {
             for (int j = 0; j < kernel_size; ++j) {
-                result[i] += single_input[i + j] * kernel[k][j];
+                result[i] += single_input[i + stride + j] * kernel[k][j];
             }
         }
     }
