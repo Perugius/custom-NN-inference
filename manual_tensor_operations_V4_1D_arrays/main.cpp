@@ -20,11 +20,19 @@ int main() {
     //perform separable convolution
     float* depthwise_result = depthwise_conv1d(input, depthwise_weights, stride, input_length, num_of_channels);
     float* pointwise_result = pointwise_conv1d(depthwise_result, pointwise_weights, input_length, num_of_channels);
+    batch_normalization(pointwise_result, gamma_coeff, beta, moving_mean, moving_variance, input_length, num_of_channels, epsilon);
+    relu(pointwise_result, input_length, num_of_channels);
     
-    for(int i = 0; i < num_of_channels*input_length; ++i){
+    for(int i = 0; i < 66; ++i){
         std::cout << pointwise_result[i] << ", ";
     }
 
-    delete[] pointwise_result;
+
+
+    // for(int i = 0; i < 10; ++i){
+    //     std::cout << pointwise_result[i] << ", ";
+    // }
+
+    // delete[] pointwise_result;
 
 }

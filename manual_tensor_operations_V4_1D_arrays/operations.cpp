@@ -70,6 +70,19 @@ float* pointwise_conv1d(float*input, const std::vector<std::vector<float>>& poin
     return result;
 }
 
+void batch_normalization(float* input, const std::vector<float>& gamma_coeff, const std::vector<float>& beta, const std::vector<float>& moving_mean, const std::vector<float>& moving_variance, int input_length, int num_of_channels, float epsilon) {
+
+    // Normalize the output
+    for (int result_index = 0; result_index < input_length; ++result_index) {
+        for (int channel = 0; channel < num_of_channels; ++channel) {
+            int index = result_index * num_of_channels + channel; // Corrected indexing
+            input[index] = (input[index] - moving_mean[channel]) / std::sqrt(moving_variance[channel] + epsilon) * gamma_coeff[channel] + beta[channel];
+        }
+    }
+
+
+}
+
 float* fully_connected(float* input, const std::vector<std::vector<float>>& weights, int& input_length, int& num_of_channels){
     int result_size = weights[0].size();
 
@@ -88,4 +101,12 @@ float* fully_connected(float* input, const std::vector<std::vector<float>>& weig
     input_length = result_size;
     num_of_channels = 1;
     return result;
+}
+
+void relu(float* input, int input_length, int num_of_channels){
+    for (int i = 0; i < input_length*num_of_channels; ++i){
+        if(input[i] < 0){
+            input[i] = 0;
+        }
+    }
 }
