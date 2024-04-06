@@ -103,6 +103,33 @@ float* fully_connected(float* input, const std::vector<std::vector<float>>& weig
     return result;
 }
 
+float* global_pooling1D(float* input, int& input_length, int& num_of_channels){
+    
+    int result_size = num_of_channels;
+
+    // allocate result array, initialize to 0
+    float* result = new float[result_size];
+    
+    // sum up total in each channel
+    for (int channel = 0; channel < num_of_channels; ++channel){
+        for(int timestep = 0; timestep < input_length; ++timestep){
+            result[channel] += input[timestep * num_of_channels + channel];
+        }
+    }
+
+    // calculate mean by diving by number of elements in each channel
+    for(int channel = 0; channel < num_of_channels; ++channel){
+        result[channel] = result[channel] / input_length;
+    }
+
+    // deallocate input since no longer needed
+    delete[] input;
+
+    // change input_length, num_of_channels remains unchanged
+    input_length = 1;
+    return result;
+}
+
 void relu(float* input, int input_length, int num_of_channels){
     for (int i = 0; i < input_length*num_of_channels; ++i){
         if(input[i] < 0){
