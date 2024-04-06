@@ -40,6 +40,6 @@ int main() {
         std::cout << fully_connected_result[i] << ", ";
     }
 
-    // delete[] pointwise_result;
+    delete[] fully_connected_result;
 
 }

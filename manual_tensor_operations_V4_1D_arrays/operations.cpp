@@ -78,7 +78,7 @@ float* fully_connected(float* input, const std::vector<std::vector<float>>& weig
     int result_size = weights[0].size();
 
     // allocate result array, initialize to 0
-    float* result = new float[result_size];
+    float* result = new float[result_size]();
 
     for (int i = 0; i < input_length * num_of_channels; ++i){
         for (int j = 0; j < result_size; ++j){
@@ -99,7 +99,7 @@ float* global_pooling1D(float* input, int& input_length, int& num_of_channels){
     int result_size = num_of_channels;
 
     // allocate result array, initialize to 0
-    float* result = new float[result_size];
+    float* result = new float[result_size]();
     
     // sum up total in each channel
     for (int channel = 0; channel < num_of_channels; ++channel){
