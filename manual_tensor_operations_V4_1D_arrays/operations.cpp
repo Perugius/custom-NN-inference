@@ -4,15 +4,6 @@
 #include <iostream>
 
 
-// DEALLOCATION FUNCTION
-template<typename T>
-void deallocate_array(T**& array, int first_dim_size) {
-    for(int i = 0; i < first_dim_size; ++i) {
-        delete[] array[i]; // delete sub array
-    }
-    delete[] array; // delete outer array
-    array = nullptr; // avoid dangling pointer issues
-}
 
 // performs the depthwise convolution part of the separable convolution
 // outputs flat array where each block of single_channel_result_size is the equivalent channels result

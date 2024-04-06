@@ -1,7 +1,7 @@
 #include <vector>
 #include <iostream>
 #include "weights.h"
-#include "operations.cpp"
+#include "operations.h"
 #include "input.h"
 
 int main() {
