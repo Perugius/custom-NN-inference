@@ -6,17 +6,19 @@
 #include "operations.h"
 #include "input.h"
 #include "Arduino.h"
+#include "communication.h"
 
 unsigned endTime;
 unsigned startTime;
-unsigned inference_time_elapsed;
+unsigned timeElapsed;
 
-
+float final_result_arr[2] = {};
 void setup() {
   Serial.begin(115200);
   while(!Serial){
     ;
   }
+  delay(100);
   //Serial.println("SERIAL CONNECTED");
 }
 
@@ -26,13 +28,14 @@ void loop() {
     int input_length = first_input_length;
     int num_of_channels = first_num_of_channels;
 
+    float* input = receive_array_V2(input_length * num_of_channels);
     // load input vector into flat array
-    float* input = new float[input_length*num_of_channels]();
-    for (int i = 0; i < input_length; ++i) {
-        for (int j = 0; j < num_of_channels; ++j) {
-            input[i * num_of_channels + j] = test_data[i][j];
-        }
-    }
+    // float* input = new float[input_length*num_of_channels]();
+    // for (int i = 0; i < input_length * num_of_channels; ++i){
+    //     input[i] = test_data[i];
+    // }
+
+    startTime = micros();
 
     // perform separable convolution 1ST LAYER
     float* depthwise_result_01 = depthwise_conv1d(input, depthwise_weights_01, stride_01, input_length, num_of_channels);
@@ -51,13 +54,19 @@ void loop() {
 
     // performs final dense layer
     float* fully_connected_result = fully_connected(global_pooling_result, dense_weights, input_length, num_of_channels);
-
-    std::cout << input_length << " + " << num_of_channels << "\n";
-    for(int i = 0; i < 1; ++i){
-        std::cout << fully_connected_result[i] << ", ";
-    }
     
-    Serial.println(fully_connected_result[0]);
+    float fully_connected_classification = fully_connected_result[0];
+    // apply sigmoid activation
+    float final_result = 1.0 / (1.0 + exp(-fully_connected_classification));
+
+    final_result_arr[0] = final_result; 
+    send_array(final_result_arr, 2);
+    // endTime = micros();
+    // timeElapsed = endTime - startTime; 
+
+    //Serial.println(1000*final_result);
+    //Serial.println(timeElapsed);
+    delay(1000);
     delete[] fully_connected_result;
 
 }
