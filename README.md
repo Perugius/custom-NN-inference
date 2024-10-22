@@ -5,7 +5,16 @@ using TensorFlow-Lite, however, due to its many limitations (and mainly due to a
 using pure C++ (no additional NN libraries). The weights were trained using [HALF: Holistic Auto Machine Learning for FPGAs](https://arxiv.org/abs/2106.14771) and subsequently 
 saved in the TensorFlow saved format and extracted as C++ arrays.
 
-The code features multiple version of the same concept of conducting inference. From 
+<h2>Versions</h2>
+
+The code features multiple version of the same concept of conducting inference:
+- V1 : Uses std::vector<std::vector<float>>, aka nested vectors (2D) for both the weights and intermediary results and performs standards 1D Convolution
+- V2 : Also uses std::vector<std::vector<float>>, but instead performs Separable 1D Convolution
+- V3 : Uses 2D lists ([][]), performs Separable 1D Convolution
+- V4 : Uses 1D lists ([]), performs Separable 1D Convolution
+
+Each iteration changed to further optimize the inference, with only V4 being able to run our somewhat large models on very limited edge devices (i.e Raspberry Pi Pico W), since 1D lists are by far the 
+most efficient method to store the intermediary results. The weights are in comparison very few in number so they are stored in std::vector<> form with no real performance penalty.
 
 
 ecg_inference contains script for running the model using the arduino IDE, it is based on manual_tensor_operations_V4
